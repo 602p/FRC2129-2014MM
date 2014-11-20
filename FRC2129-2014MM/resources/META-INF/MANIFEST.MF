@@ -1,0 +1,6 @@
+MIDlet-Name: FRC2129-2014MM
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: FIRST
+MIDlet-1: Team2129MMRobot, , org.swrobotics.y2014.minneminne.Team2129MMRobot
+MicroEdition-Profile: IMP-1.0
+MicroEdition-Configuration: CLDC-1.1
