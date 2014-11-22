@@ -17,6 +17,8 @@ public class Team2129MMRobot extends SimpleRobot {
     public Jaguar rollerJaguar = new Jaguar(CONSTANTS.ROLLER_PWM);
     public Jaguar hingeJaguar = new Jaguar(CONSTANTS.HINGE_PWM);
     public DigitalInput hingeTopLimit = new DigitalInput(CONSTANTS.HINGE_TOP_LIMIT);
+    public final int hingeTopLimit_threshold = 300;
+    public int hingeTopLimit_current = 0;
     
     public void operatorControl(){
         while (isOperatorControl()&&isEnabled()){
@@ -34,13 +36,19 @@ public class Team2129MMRobot extends SimpleRobot {
                 }
             }
             if (CONSTANTS.ENABLE_HINGE){
-                if (this.leftjoystick.getRawButton(CONSTANTS.HINGE_UP_BTN) & ((this.hingeTopLimit.get() || this.driverstation.getDigitalIn(CONSTANTS.DSB_LIMITOVERRIDE_ID)) || !CONSTANTS.ENABLE_LIMIT_SWITCH)){
+                if (this.leftjoystick.getRawButton(CONSTANTS.HINGE_UP_BTN) & ((this.hingeTopLimit_current>this.hingeTopLimit_threshold || this.driverstation.getDigitalIn(CONSTANTS.DSB_LIMITOVERRIDE_ID)) || !CONSTANTS.ENABLE_LIMIT_SWITCH)){
                     this.hingeJaguar.set(this.driverstation.getAnalogIn(CONSTANTS.DSA_HINGESPEED_ID));
                 }else if (this.leftjoystick.getRawButton(CONSTANTS.HINGE_DOWN_BTN)){
                     this.hingeJaguar.set(-this.driverstation.getAnalogIn(CONSTANTS.DSA_HINGESPEED_ID));
                 }else{
                     this.hingeJaguar.set(0);
                 }
+            }
+            
+            if (!this.hingeTopLimit.get()){
+                this.hingeTopLimit_current+=1;
+            }else{
+                this.hingeTopLimit_current=0;
             }
             
             this.driverstation.setDigitalOut(1, this.hingeTopLimit.get());
